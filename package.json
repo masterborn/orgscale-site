@@ -2,10 +2,8 @@
   "name": "orgscale-site",
   "version": "1.0.0",
   "private": true,
-  "description": "Self-hosted static reproduction of orgscale.ai",
+  "description": "Marketing site for orgscale.ai",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "mirror": "python3 tools/mirror.py"
+    "start": "node server.js"
   }
 }

@@ -11,7 +11,7 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = path.join(__dirname, "public");
+const ROOT = __dirname;
 const PORT = Number(process.env.PORT) || 4321;
 
 const MIME = {
@@ -59,8 +59,13 @@ http
       if (!err && st.isDirectory()) file = path.join(file, "index.html");
       fs.readFile(file, (err2, body) => {
         if (err2) {
-          // Single-page site: unknown paths fall back to the document,
-          // which keeps deep links and #anchors working.
+          // Single-page site: extensionless paths fall back to the document so
+          // deep links keep working. A missing *asset* must still 404 loudly,
+          // otherwise a typo'd path silently returns HTML and looks fine.
+          if (path.extname(file)) {
+            res.writeHead(404, { "Content-Type": "text/plain" }).end("Not Found: " + pathname);
+            return;
+          }
           fs.readFile(path.join(ROOT, "index.html"), (err3, fallback) => {
             if (err3) {
               res.writeHead(404, { "Content-Type": "text/plain" }).end("Not Found");

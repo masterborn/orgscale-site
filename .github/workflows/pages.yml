@@ -28,11 +28,9 @@ jobs:
 
       - uses: actions/configure-pages@v5
 
-      # Uploads public/ as-is. This path skips Jekyll entirely, so no
-      # underscore-prefixed file can be silently dropped.
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: .
 
       - id: deployment
         uses: actions/deploy-pages@v4
