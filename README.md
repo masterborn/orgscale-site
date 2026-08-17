@@ -132,9 +132,15 @@ other service is involved.
 
 Asset paths are **document-relative**, so the same build works unmodified both
 at a domain root and under a project subpath like
-`user.github.io/orgscale/`. Verified by serving `public/` under a `/orgscale/`
-prefix and re-running the full comparison — three of six viewports came out at
-a literal 0.0000% pixel difference from production.
+`masterborn.github.io/orgscale-site/`.
+
+Re-running the full comparison against the **deployed** Pages site gave
+0.0000% at 1512, 1440 and 390, and ≤0.0003% at 810 and 500, with identical text
+and zero computed-style diffs throughout. At 1200 the figure moves between
+0.50% and 1.06% run to run — a section there animates a fanning-line graphic
+whose progress depends on frame timing. A live-vs-live control at that same
+viewport measured **1.37%**, i.e. production differs from itself more than it
+differs from this copy, and the deployed site served zero failed requests.
 
 Why Actions rather than pointing Pages at a folder: Pages' branch-based source
 only offers the repo root or `/docs`, not `/public`, and it runs Jekyll, which
@@ -143,27 +149,37 @@ directory as-is. (`public/.nojekyll` is committed anyway, so switching to
 branch-based serving stays safe. If you prefer that route, rename `public/` to
 `docs/` and set Source → Deploy from a branch → `/docs`.)
 
-### Two things to check after the first deploy
+Live at **<https://masterborn.github.io/orgscale-site/>**.
 
-**1. `.mjs` MIME type.** The page hydrates via ES modules, which browsers
-refuse to execute unless served as JavaScript. MDN documents GitHub Pages as
-serving `.mjs` correctly, but that was not confirmed against a live deployment
-here. Confirm in one command:
+### MIME types on Pages — confirmed
 
-```bash
-curl -sI https://<your-pages-url>/assets/framer/script_main.XZVAIZWD.mjs | grep -i content-type
-```
+GitHub Pages serves everything this site needs with the right `Content-Type`,
+measured against the actual deployment:
 
-`text/javascript` or `application/javascript` is fine. If it comes back
-`application/octet-stream`, the fix is to rename the 19 files in
-`public/assets/framer/` from `.mjs` to `.js` and rewrite the import specifiers
-to match — the extension carries no meaning to the browser, only the
-`Content-Type` does.
+| Path | Content-Type |
+|---|---|
+| `/` | `text/html; charset=utf-8` |
+| `assets/framer/*.mjs` | `text/javascript; charset=utf-8` |
+| `assets/fonts/**/*.woff2` | `font/woff2` |
+| `assets/images/*.webp` | `image/webp` |
 
-**2. Custom domain.** Serving this on `orgscale.ai` itself means moving the
-domain's DNS off Framer, at which point this copy *becomes* the site. Add a
-`CNAME` file to `public/` (and to `tools/mirror.py`, so re-mirroring keeps it).
+`.mjs` was the risk — browsers refuse to execute a module served as
+`application/octet-stream`, which would break hydration entirely. Pages gets it
+right, so no `.mjs` → `.js` renaming is needed.
+
+### Custom domain
+
+Serving this on `orgscale.ai` itself means moving the domain's DNS off Framer,
+at which point this copy *becomes* the site. Add a `CNAME` file to `public/`
+(and to `tools/mirror.py`, so re-mirroring keeps it).
+
 Until then, `robots.txt`, `sitemap.xml` and the `og:`/`canonical` meta tags
-still say `https://orgscale.ai/` — on a `github.io` URL that means the copy
-points search engines at the Framer original, which is usually what you want
-for a staging deploy and wrong for a replacement.
+still say `https://orgscale.ai/`. That is the right setup for a staging deploy —
+the `canonical` tag tells search engines the Framer original is the real page,
+so the `github.io` copy should not compete with it. It becomes wrong the moment
+this copy is meant to *be* the site.
+
+Note that the repo is public, so this copy is world-readable and crawlable. If
+you would rather it were not indexed at all while it is staging, change
+`public/robots.txt` to `Disallow: /` — but that is a deliberate deviation from
+production, so it is not applied by default.
