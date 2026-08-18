@@ -361,31 +361,28 @@ a { color: inherit; text-decoration: none; }
   border-radius: 64px;
   background: linear-gradient(var(--good), var(--good-to));
 }
-/* Progress ring. The design draws these as stroked arcs, so the exported
-   arc art is used directly: a full-circle track under the score's own arc.
-   Each dial names its arc through --ring. */
-.score__dial::before,
-.score__dial::after {
-  content: "";
+/* Progress ring. The arc length encodes the score itself — a full circle is
+   100 — so the dash is derived from --pct rather than baked into fixed art.
+   r=24.5 in a 53-unit box gives a circumference of 153.94. */
+.ring {
   position: absolute;
   inset: 0;
   margin: auto;
   width: 88.4%;                      /* 53 of the 60px dial */
   height: 88.4%;
-  background: center / contain no-repeat;
+  overflow: visible;
+  transform: rotate(-90deg);         /* start the sweep at 12 o'clock */
 }
-.score__dial::before { background-image: url("../assets/svg/hero-ring-track.svg"); }
-.score__dial::after  { background-image: none; }
-
-/* Each score's arc. Declared here rather than through a custom property in
-   a style attribute: a url() inside a custom property resolves against the
-   stylesheet that consumes it, not the document, so inline paths 404. */
-.ring-h93::after { background-image: url("../assets/svg/hero-ring-arc-a.svg"); }
-.ring-h84::after { background-image: url("../assets/svg/hero-ring-arc-b.svg"); }
-.ring-21::after  { background-image: url("../assets/svg/badge-ring-21.svg"); }
-.ring-84::after  { background-image: url("../assets/svg/badge-ring-84.svg"); }
-.ring-93::after  { background-image: url("../assets/svg/badge-ring-93.svg"); }
-.ring-93b::after { background-image: url("../assets/svg/badge-ring-93b.svg"); }
+.ring circle {
+  fill: none;
+  stroke-width: 4;
+}
+.ring__track { stroke: rgba(255, 255, 255, 0.25); }
+.ring__arc {
+  stroke: rgba(255, 255, 255, 0.95);
+  stroke-linecap: round;
+  stroke-dasharray: calc(var(--pct) * 1.5394) 153.94;
+}
 .score__dial--bad  { background: linear-gradient(var(--bad),  var(--bad-to)); }
 .score__dial--warn { background: linear-gradient(var(--warn), var(--warn-to)); }
 
@@ -429,8 +426,7 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 14.4px 14.4px 16px -4.8px rgba(13, 19, 34, 0.05);
 }
 .score--sm .score__dial { width: 41px; height: 41px; border-radius: 61px; }
-.score--sm .score__dial::before { background-image: url("../assets/svg/badge-ring-track.svg"); }
-.score--sm .score__num   { font-size: 13.3px; line-height: 16px;   letter-spacing: -0.27px; }
+.score--sm .score--sm .score__num   { font-size: 13.3px; line-height: 16px;   letter-spacing: -0.27px; }
 .score--sm .score__label { font-size: 11.9px; line-height: 14.3px; letter-spacing: -0.24px; }
 .score--sm .score__meta  { font-size: 9.8px;  line-height: 11.8px; letter-spacing: -0.2px;  }
 
@@ -626,23 +622,9 @@ a { color: inherit; text-decoration: none; }
   filter: blur(0.5px);
 }
 
-.dot::before,
-.dot::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 87.8%;                      /* 36 of the 41px dot */
-  height: 87.8%;
-  background: center / contain no-repeat;
-}
-.dot::before { background-image: url("../assets/svg/badge-ring-track.svg"); }
-.dot--31::after { background-image: url("../assets/svg/badge-ring-31.svg"); }
-.dot--41::after { background-image: url("../assets/svg/badge-ring-41.svg"); }
-.dot--91::after { background-image: url("../assets/svg/badge-ring-91.svg"); }
-.dot::after  { background-image: none; }
 
 .dot > span { position: relative; z-index: 1; }
+.ring { z-index: 0; }
 .dot {
   position: absolute;
   display: grid;
