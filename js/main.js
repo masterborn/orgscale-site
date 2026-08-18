@@ -50,8 +50,11 @@
      against our own base, which is authored at that 0.7 starting size. */
   var stages = [].slice.call(document.querySelectorAll(".diagram__stage, .report__stage"));
   if (stages.length) {
-    var TRAVEL = 450;
+    var TRAVEL = 620;                     // longer travel = gentler growth
     var GROWTH = 0.4286;                  // 1 / 0.7 - 1
+    // Smoothstep: eases in and out of the growth instead of tracking scroll
+    // linearly, which reads abruptly at both ends.
+    var ease = function (t) { return t * t * (3 - 2 * t); };
     var ticking = false;
     var paint = function () {
       ticking = false;
@@ -62,7 +65,7 @@
         var seen = vh - stage.getBoundingClientRect().top;
         var p = seen / TRAVEL;
         p = p < 0 ? 0 : p > 1 ? 1 : p;
-        layer.style.transform = "scale(" + (1 + GROWTH * p).toFixed(4) + ")";
+        layer.style.transform = "scale(" + (1 + GROWTH * ease(p)).toFixed(4) + ")";
       });
     };
     var onScroll = function () {

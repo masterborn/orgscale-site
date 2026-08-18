@@ -382,6 +382,7 @@ a { color: inherit; text-decoration: none; }
 .ring-21::after  { background-image: url("../assets/svg/badge-ring-21.svg"); }
 .ring-84::after  { background-image: url("../assets/svg/badge-ring-84.svg"); }
 .ring-93::after  { background-image: url("../assets/svg/badge-ring-93.svg"); }
+.ring-93b::after { background-image: url("../assets/svg/badge-ring-93b.svg"); }
 .score__dial--bad  { background: linear-gradient(var(--bad),  var(--bad-to)); }
 .score__dial--warn { background: linear-gradient(var(--warn), var(--warn-to)); }
 
@@ -414,6 +415,7 @@ a { color: inherit; text-decoration: none; }
 }
 .score__meta .is-good { color: var(--good); font-weight: 600; }
 .score__meta .is-bad  { color: var(--bad);  font-weight: 600; }
+.score__meta .is-settled { color: #3ca353; font-weight: 600; }
 
 /* Smaller variant used inside the diagram */
 .score--sm {
@@ -879,7 +881,7 @@ a { color: inherit; text-decoration: none; }
 /* Framer's small tier: ≤809 */
 @media (max-width: 809px) {
   :root {
-    --fs-h1: 40px;
+    --fs-h1: 42.4px;
     --fs-h2: 32px;
     --fs-verdict: 26px;
     --radius-panel: 24px;
@@ -906,9 +908,25 @@ a { color: inherit; text-decoration: none; }
   .verdict { margin-top: 8px; padding: 28px 20px; }
   .verdict__line--last { flex-direction: column; gap: 4px; }
 
-  /* The wide decorative stages have no small-screen layout in the design;
-     the copy carries these sections on its own. */
-  .diagram, .report__stage { display: none; }
+  /* The design keeps both decorative stages on small screens, clipped to a
+     shorter band rather than dropped — 282px for the diagram, 115px for the
+     report, measured against production at 390px. */
+  .diagram {
+    height: 282px;
+    padding: 0;
+    overflow: hidden;
+  }
+  .diagram__stage {
+    transform: scale(0.575);
+    transform-origin: center center;
+  }
+  .report { padding-top: 20px; }
+  .report__stage {
+    height: 115px;
+    transform: scale(0.25);
+    transform-origin: center top;
+    overflow: hidden;
+  }
 
   .stack { padding: 48px 20px 0; }
   .cta__radar { margin-top: 32px; }
