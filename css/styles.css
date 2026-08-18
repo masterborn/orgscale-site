@@ -162,13 +162,13 @@ a { color: inherit; text-decoration: none; }
 /* --- Buttons + the two-copy hover swap ---------------------------------- */
 
 .btn {
-  --swap-h: var(--lh-body);
+  --swap-h: 23px;
   display: inline-flex;
   align-items: center;
   padding: 10px 16px;
   border-radius: var(--radius-btn);
   font-size: var(--fs-body);
-  line-height: var(--lh-body);
+  line-height: 23px;
   white-space: nowrap;
 }
 .btn--dark  { background: var(--ink);   color: var(--white); }
@@ -191,18 +191,20 @@ a { color: inherit; text-decoration: none; }
 
 /* --- Header / nav ------------------------------------------------------- */
 
-/* The bar is pinned to the viewport and drops a little further from the
-   top once the page is scrolled, as in the original. */
+/* Pinned bar. Once the page scrolls it contracts around its contents —
+   1200px wide at the top, 626px once scrolled — staying at y24 throughout,
+   and picks up a deeper shadow. The wrapper stays click-through so it does
+   not swallow presses on the hero behind it. */
 .site-header {
   position: fixed;
   inset: 0 0 auto;
   z-index: 20;
   display: flex;
   justify-content: center;
-  padding: 24px 20px 0;
-  transition: padding-top 0.3s var(--ease);
+  padding: 24px 16px;
+  pointer-events: none;
 }
-.site-header.is-stuck { padding-top: 49px; }
+.site-header > * { pointer-events: auto; }
 
 .nav {
   position: relative;
@@ -215,10 +217,15 @@ a { color: inherit; text-decoration: none; }
   border-radius: 12px;
   background: var(--white);
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.07);
+  transition: max-width 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+.is-compact .nav {
+  max-width: 626px;
+  box-shadow: 0 1px 30px rgba(0, 0, 0, 0.12);
 }
 
 .nav__logo { display: flex; align-items: center; }
-.nav__logo img { width: 115px; height: 25px; }
+.nav__logo img { width: 118px; height: 25px; }
 
 .nav__links {
   position: absolute;
@@ -828,8 +835,8 @@ a { color: inherit; text-decoration: none; }
     --radius-panel: 24px;
   }
 
-  .site-header { padding: 12px 12px 0; }
-  .site-header.is-stuck { padding-top: 12px; }
+  .site-header { padding: 12px; }
+  .is-compact .nav { max-width: var(--shell); box-shadow: 0 0 12px rgba(0, 0, 0, 0.07); }
   .nav { padding: 8px 8px 8px 12px; }
   .nav__links { display: none; }
 

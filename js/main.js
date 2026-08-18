@@ -29,15 +29,15 @@
 
   targets.forEach(function (el) { observer.observe(el); });
 
-  /* 2. The pinned header sits lower once the page has scrolled. */
+  /* 2. The pinned bar contracts around its contents once the page scrolls. */
   var header = document.querySelector(".site-header");
   if (header) {
-    var stuck = false;
+    var compact = null;
     var sync = function () {
-      var next = window.scrollY > 8;
-      if (next === stuck) return;
-      stuck = next;
-      header.classList.toggle("is-stuck", stuck);
+      var next = window.scrollY > 250;
+      if (next === compact) return;
+      compact = next;
+      header.classList.toggle("is-compact", next);
     };
     addEventListener("scroll", sync, { passive: true });
     sync();
