@@ -36,3 +36,7 @@ no dependencies. Editing the site means editing these files.
 ## Deployment
 
 Pushing to `main` publishes the site through GitHub Pages.
+
+`CNAME` must stay in the repository root. The deploy uploads the repo as the
+published artifact, and GitHub reads the custom domain from a CNAME file in
+that artifact — remove the file and the next deploy drops `orgscale.ai`.
