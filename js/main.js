@@ -43,15 +43,35 @@
     sync();
   }
 
-  /* 3. The alignment diagram animates only while it is on screen, so the
-     beam sweep and the red→green score flip stay in step with each other
-     and don't burn frames off-screen. */
-  var diagram = document.querySelector(".diagram__stage");
-  if (diagram) {
-    new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        diagram.classList.toggle("is-running", entry.isIntersecting);
+  /* 3. Both decorative stages grow as they travel into view, and the growth
+     tracks scroll position rather than firing once on intersection —
+     measured against the original, which sits at 0.787 of its resting size
+     with ~133px showing and reaches full size at ~450px. Expressed here
+     against our own base, which is authored at that 0.7 starting size. */
+  var stages = [].slice.call(document.querySelectorAll(".diagram__stage, .report__stage"));
+  if (stages.length) {
+    var TRAVEL = 450;
+    var GROWTH = 0.4286;                  // 1 / 0.7 - 1
+    var ticking = false;
+    var paint = function () {
+      ticking = false;
+      var vh = window.innerHeight;
+      stages.forEach(function (stage) {
+        var layer = stage.firstElementChild;
+        if (!layer) return;
+        var seen = vh - stage.getBoundingClientRect().top;
+        var p = seen / TRAVEL;
+        p = p < 0 ? 0 : p > 1 ? 1 : p;
+        layer.style.transform = "scale(" + (1 + GROWTH * p).toFixed(4) + ")";
       });
-    }, { threshold: 0.25 }).observe(diagram);
+    };
+    var onScroll = function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(paint);
+    };
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll, { passive: true });
+    paint();
   }
 })();

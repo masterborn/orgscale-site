@@ -564,6 +564,25 @@ a { color: inherit; text-decoration: none; }
   background: linear-gradient(rgba(172, 145, 115, 0.1), rgba(255, 255, 255, 0.1));
 }
 
+/* --- Graphic stages ----------------------------------------------------- */
+
+/* Both decorative stages are authored at the size they hold *before* their
+   entrance animation, then scale up about their centre to the resting size
+   the design settles on — 1/0.7, measured against production. Scaling the
+   whole layer carries the type and the badge art with it, so no dimension
+   has to be restated at two sizes. */
+.stage-zoom {
+  position: absolute;
+  inset: 0;
+  transform: scale(1);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-zoom { transform: scale(1.4286) !important; }
+}
+
 /* --- Alignment diagram ------------------------------------------------- */
 
 .diagram {
