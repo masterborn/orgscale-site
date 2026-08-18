@@ -7,11 +7,26 @@
 
 /* --- Fonts ---------------------------------------------------------------- */
 
+/* Static per-weight files, not a variable font: interpolating a variable
+   Manrope to 400 renders visibly heavier than the static 400 master. */
 @font-face {
   font-family: "Manrope";
-  src: url("../assets/fonts/manrope-variable.woff2") format("woff2-variations"),
-       url("../assets/fonts/manrope-variable.woff2") format("woff2");
-  font-weight: 200 800;              /* one variable file covers every weight used */
+  src: url("../assets/fonts/manrope-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Manrope";
+  src: url("../assets/fonts/manrope-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Manrope";
+  src: url("../assets/fonts/manrope-600.woff2") format("woff2");
+  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
@@ -176,14 +191,18 @@ a { color: inherit; text-decoration: none; }
 
 /* --- Header / nav ------------------------------------------------------- */
 
+/* The bar is pinned to the viewport and drops a little further from the
+   top once the page is scrolled, as in the original. */
 .site-header {
-  position: absolute;
-  inset: 24px 0 auto;
+  position: fixed;
+  inset: 0 0 auto;
   z-index: 20;
   display: flex;
   justify-content: center;
-  padding: 0 20px;
+  padding: 24px 20px 0;
+  transition: padding-top 0.3s var(--ease);
 }
+.site-header.is-stuck { padding-top: 49px; }
 
 .nav {
   position: relative;
@@ -809,7 +828,8 @@ a { color: inherit; text-decoration: none; }
     --radius-panel: 24px;
   }
 
-  .site-header { inset: 12px 0 auto; padding: 0 12px; }
+  .site-header { padding: 12px 12px 0; }
+  .site-header.is-stuck { padding-top: 12px; }
   .nav { padding: 8px 8px 8px 12px; }
   .nav__links { display: none; }
 

@@ -29,7 +29,21 @@
 
   targets.forEach(function (el) { observer.observe(el); });
 
-  /* 2. The alignment diagram animates only while it is on screen, so the
+  /* 2. The pinned header sits lower once the page has scrolled. */
+  var header = document.querySelector(".site-header");
+  if (header) {
+    var stuck = false;
+    var sync = function () {
+      var next = window.scrollY > 8;
+      if (next === stuck) return;
+      stuck = next;
+      header.classList.toggle("is-stuck", stuck);
+    };
+    addEventListener("scroll", sync, { passive: true });
+    sync();
+  }
+
+  /* 3. The alignment diagram animates only while it is on screen, so the
      beam sweep and the red→green score flip stay in step with each other
      and don't burn frames off-screen. */
   var diagram = document.querySelector(".diagram__stage");
